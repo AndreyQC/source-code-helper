@@ -21,10 +21,11 @@ def _hyperlink(text, address):
 
 
 path_schui = path.dirname(path.abspath(__file__))
-path_file_template = path.join(path_schui, "folder_file_templates")
-path_replace_templates = path.join(path_schui, "replace_templates")
-path_dataset_definition = path.join(path_schui, "dataset_definition")
-path_file_patterns = path.join(path_schui, "file_patterns")
+path_examples = path.join(path.dirname(path.dirname(path.abspath(__file__))),"examples")
+path_file_template = path.join(path_examples,"folder_file_templates")
+path_replace_templates = path.join(path_examples,"replace_templates")
+path_dataset_definition = path.join(path_examples,"dataset_definition")
+path_file_patterns = path.join(path_examples,"file_patterns")
 path_assets = path.join(path_schui, "assets")
 
 default_path = r"C:\-=Dump=-"

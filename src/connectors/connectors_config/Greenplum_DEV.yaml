@@ -1,0 +1,14 @@
+comment:
+  about: yaml describe connection to database. if value starts from ENVOS_ program will use ENVIRONMENT VARIABLE
+info:
+  type: greenplum
+  name: Greenplum DEV
+  environment: dev
+connection:
+  host: crypto_
+  port: crypto_
+  ssl_mode: verify-full
+  db_name: crypto_
+  user: crypto_
+  target_session_attrs: read-write
+  password: crypto_

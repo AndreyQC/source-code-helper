@@ -1,0 +1,35 @@
+# folders and files will be created based on this configuration 
+scaffolding:
+  Clickhouse:
+    gp_db:
+      staging:
+        create_file:
+          name: table staging_${object_type}_${object_name}.sql
+          pattern: file_pattern_clickhouse_table_staging
+      tables:
+        create_file:
+          name: table ${object_type}_${object_name}.sql
+          pattern: file_pattern_clickhouse_table_main
+    gp_db_DSP_PER:
+      views:
+        create_file:
+          name: view V_${OBJECT_TYPE}_${OBJECT_NAME}.sql
+          pattern: file_pattern_clickhouse_view
+  Greenplum:
+    gp_db:
+      ch_gp_db:
+        tables:
+          create_file:
+            name: table ext_w_staging_${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_table_external_clickhouse
+      gp_db_dmt_per:
+        tables:
+          create_file:
+            name: table ${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_table_fct
+      gp_db_dsp_per:
+        views:
+          create_file:
+            name: view v_${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_view_dsp_per
+  

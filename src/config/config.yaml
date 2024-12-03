@@ -1,0 +1,15 @@
+app_name: Source_Code_Helper
+app_short_name: SRCCDHLP
+log_Level: WARN
+authors:
+  - Andrey Potapov
+
+description:
+  purpose:
+
+paths:
+  working_path: Temp\Dump
+  log_path: Temp\Logs
+
+flags:
+  debug_mode: False

@@ -1,0 +1,14 @@
+object_key;order;file_column_name;file_column_data_type;gp_column_name;gp_column_data_type;ch_column_name;ch_column_data_type;ch_view_column_name
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin/period;1;Период;TEXT;period;TEXT;period;TEXT;period
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;2;ИНН производителя;TEXT;producer_tax_number;TEXT;producer_tax_number;TEXT;producer_tax_number
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;3;Наименование производителя;TEXT;producer_name;TEXT;producer_name;TEXT;producer_name
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;4;Код субъекта РФ;TEXT;rf_region_code;TEXT;rf_region_code;TEXT;rf_region_code
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;5;Субъект РФ;TEXT;rf_region_name;TEXT;rf_region_name;TEXT;rf_region_name
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;6;ИНН участника;TEXT;counterparty_tax_number;TEXT;counterparty_tax_number;TEXT;counterparty_tax_number
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;7;Наименование участника;TEXT;counterparty_name;TEXT;counterparty_name;TEXT;counterparty_name
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;8;ТН ВЭД;TEXT;tn_ved;TEXT;tn_ved;TEXT;tn_ved
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;9;GTIN;TEXT;gtin;TEXT;gtin;TEXT;gtin
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;10;Наименование товара;TEXT;product_name;TEXT;product_name;TEXT;product_name
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;11;Количество точек продаж;TEXT;number_of_pos;NUMERIC(24,8);number_of_pos;DECIMAL (24, 8);number_of_pos
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;12;Объем продаж;TEXT;sales_vol;NUMERIC(24,8);sales_vol;DECIMAL (24, 8);sales_vol
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;13;Средневзвешенная цена, руб.;TEXT;avg_wtd_price_rub;NUMERIC(24,8);avg_wtd_price_rub;DECIMAL (24, 8);avg_wtd_price_rub

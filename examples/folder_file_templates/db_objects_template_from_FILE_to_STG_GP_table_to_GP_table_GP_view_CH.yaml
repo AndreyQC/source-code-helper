@@ -1,0 +1,53 @@
+scaffolding:
+  Clickhouse:
+    clickhouse_database:
+      staging:
+        create_file:
+          name: table staging_${object_type}_${object_name}.sql
+          pattern: file_pattern_clickhouse_table_staging
+      tables:
+        create_file:
+          name: table ${object_type}_${object_name}.sql
+          pattern: file_pattern_clickhouse_table_main
+    CLICKHOUSE_DM_DATABASE:
+      views:
+        create_file:
+          name: view V_${OBJECT_TYPE}_${OBJECT_NAME}.sql
+          pattern: file_pattern_clickhouse_view
+  Greenplum:
+    gp_db:
+      ch_gp_db:
+        tables:
+          create_file:
+            name: table ext_w_staging_${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_table_external_clickhouse
+      gp_db_dmt_per:
+        functions:
+          create_file:
+            name: function fun_${object_type}_${object_name}_load.sql
+            pattern: file_pattern_greenplum_function_load_from_stg
+        tables:
+          create_file:
+            name: table ${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_table_fct
+      gp_db_stg_crpt:
+        functions:
+          create_file:
+            name: function fun_stg_${object_type}_${object_name}_load.sql
+            pattern: file_pattern_greenplum_function_load_stg_from_external
+        tables:
+          create_file:
+            name: table stg_${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_table_fct_stg
+      gp_db_dsp_per:
+        views:
+          create_file:
+            name: view v_${object_type}_${object_name}.sql
+            pattern: file_pattern_greenplum_view_dsp_per
+      gp_db_ext_crpt:
+        tables:
+          create_file:
+            name: table ext_${object_name}.sql
+            pattern: file_pattern_greenplum_table_external_s3
+
+  

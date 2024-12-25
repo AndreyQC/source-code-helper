@@ -10,5 +10,5 @@ database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;8;ТН ВЭД;T
 database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;9;GTIN;TEXT;gtin;TEXT;gtin;TEXT;gtin
 database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;10;Наименование товара;TEXT;product_name;TEXT;product_name;TEXT;product_name
 database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;11;Количество точек продаж;TEXT;number_of_pos;NUMERIC(24,8);number_of_pos;DECIMAL (24, 8);number_of_pos
-database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;12;Объем продаж;TEXT;sales_vol;NUMERIC(24,8);sales_vol;DECIMAL (24, 8);sales_vol
+database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;12;Объем продаж;TEXT;sales_vol;NUMERIC(24,8);sales_vol;DECIMAL (24, 8);Объем продаж
 database/gp_db/schema/gp_db_dmt_per/table/stg_mrk_prices_by_gtin;13;Средневзвешенная цена, руб.;TEXT;avg_wtd_price_rub;NUMERIC(24,8);avg_wtd_price_rub;DECIMAL (24, 8);avg_wtd_price_rub

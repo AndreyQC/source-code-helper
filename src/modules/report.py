@@ -2,12 +2,18 @@ import csv
 
 
 def save_csv_from_list_of_dict(list_of_dict: list, path: str) -> None:
-    keys = list_of_dict[0].keys()
+    result = dict()
+    if len(list_of_dict) == 0:
+        result = {"result": "empty"}
+    else:
+        keys = list_of_dict[0].keys()
 
-    with open(path, 'w', newline='', encoding='utf-8') as output_file:
-        dict_writer = csv.DictWriter(output_file, keys)
-        dict_writer.writeheader()
-        dict_writer.writerows(list_of_dict)
+        with open(path, 'w', newline='', encoding='utf-8') as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(list_of_dict)
+        result = {"result": "created"}
+    return result
 
 
 if __name__ == '__main__':

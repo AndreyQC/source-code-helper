@@ -31,3 +31,4 @@
         pip install ruamel.yaml
         pip install psycopg2
         pip install dearpygui
+        pip install cryptography

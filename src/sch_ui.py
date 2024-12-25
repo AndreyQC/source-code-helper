@@ -1,11 +1,13 @@
 import dearpygui.dearpygui as dpg
 import webbrowser
-import copy
-from dearpygui_ext.themes import create_theme_imgui_dark
+import os
 import sch_folder_file_generator as ffg
 import modules.autodoc_files as auto_doc
 import modules.report as auto_doc_report
+import copy
 
+from dearpygui_ext.themes import create_theme_imgui_dark
+from cryptography.fernet import Fernet
 from yaml import safe_load
 from os import path, getcwd, listdir, makedirs
 
@@ -16,16 +18,16 @@ newpaths = []
 
 
 def _hyperlink(text, address):
-    b = dpg.add_button(label=text, callback=lambda:webbrowser.open(address))
+    b = dpg.add_button(label=text, callback=lambda: webbrowser.open(address))
     dpg.bind_item_theme(b, "__demo_hyperlinkTheme")
 
 
 path_schui = path.dirname(path.abspath(__file__))
-path_examples = path.join(path.dirname(path.dirname(path.abspath(__file__))),"examples")
-path_file_template = path.join(path_examples,"folder_file_templates")
-path_replace_templates = path.join(path_examples,"replace_templates")
-path_dataset_definition = path.join(path_examples,"dataset_definition")
-path_file_patterns = path.join(path_examples,"file_patterns")
+path_examples = path.join(path.dirname(path.dirname(path.abspath(__file__))), "examples")
+path_file_template = path.join(path_examples, "folder_file_templates")
+path_replace_templates = path.join(path_examples, "replace_templates")
+path_dataset_definition = path.join(path_examples, "dataset_definition")
+path_file_patterns = path.join(path_examples, "file_patterns")
 path_assets = path.join(path_schui, "assets")
 
 default_path = r"C:\-=Dump=-"
@@ -127,17 +129,64 @@ def callback_button__create_report():
     selected__source_code_path = path.join(dpg.get_value("input__path_objects_for_report"))
     selected__report_path = path.join(dpg.get_value("input__path_report"))
     selected__report_name = path.join(dpg.get_value("input__report_file_name")) + ".csv"
-    report__full_path = path.join(selected__report_path,selected__report_name)
+    report__full_path = path.join(selected__report_path, selected__report_name)
     print("-----------------------------------------------------------------")
     print(f"selected__source_code_path {selected__source_code_path}")
     print(f"selected__report_path {selected__report_path}")
     print(f"selected__report_name {selected__report_name}")
-    report_objects = auto_doc.get_objects_for_report_from_auto_doc(selected__source_code_path)
+    module_filter = dpg.get_value("input__report_module_filter")
+    module_list = module_filter.split(",")
+    report_objects = auto_doc.get_objects_for_report_from_auto_doc_filtered_by_module(
+        selected__source_code_path,
+        module_list)
     if report_objects:
         for r in report_objects:
             print(r)
-    auto_doc_report.save_csv_from_list_of_dict(report_objects, report__full_path)    
+    auto_doc_report.save_csv_from_list_of_dict(report_objects, report__full_path)
     print(report__full_path)
+    dpg.show_item("modal_id")
+
+
+def callback_button__generate_cipher_key():
+    # Set the text field value to selected path
+    cipher_key = Fernet.generate_key()
+    dpg.configure_item("input__cipher_key", password=True)
+    dpg.set_value("input__cipher_key", cipher_key)
+
+
+def callback_button__show_cipher_key():
+    # check current state
+    item_password_property = dpg.get_item_configuration("input__cipher_key")["password"]
+    if item_password_property:
+        dpg.configure_item("input__cipher_key", password=False)
+        dpg.set_item_label("item_button__toggle_password_property", "Hide key")
+    else:
+        dpg.configure_item("input__cipher_key", password=True)
+        dpg.set_item_label("item_button__toggle_password_property", "Show key")
+
+
+def callback_item_button__use_key_from_env_var():
+    env_var_name = dpg.get_value("item_input_test__env_var_name")
+    if env_var_name not in os.environ.keys():
+        dpg.configure_item("window_modal__get_value_from_env_var_error", show=True)
+    else:
+        dpg.set_value("input__cipher_key", os.environ[env_var_name])
+        dpg.configure_item("input__cipher_key", password=True)
+        dpg.set_item_label("item_button__toggle_password_property", "Show key")
+
+
+def callback_item_button__encrypt():
+    cipher = Fernet(dpg.get_value("input__cipher_key"))
+    text = dpg.get_value("item_input__for_encrypt").encode('utf-8')
+    encrypted_text = cipher.encrypt(text)
+    dpg.set_value("item_input__encrypted", encrypted_text.decode("utf-8"))
+
+
+def callback_item_button__decrypt():
+    cipher = Fernet(dpg.get_value("input__cipher_key"))
+    text = dpg.get_value("item_input__for_decrypt")
+    decrypted_text = cipher.decrypt(text.encode('utf-8'))
+    dpg.set_value("item_input__decrypted", decrypted_text.decode("utf-8"))
 
 
 def create_folders():
@@ -179,11 +228,50 @@ with dpg.window(tag="Primary Window", autosize=True):
             with dpg.group(horizontal=True):
                 dpg.add_text("Helper for some routine tasks")
 
-    # подключения к базе
+    # =======================================================================================================================
+    # Немного криптографии
+    # =======================================================================================================================
+
+    with dpg.collapsing_header(label="Немного криптографии"):
+        dpg.add_text("тут можно зашифровать и расшифровать значение")
+        with dpg.group(horizontal=True):
+            dpg.add_input_text(default_value="ключ будет тут", tag="input__cipher_key")
+            dpg.add_button(
+                label="generate cipher key", callback=callback_button__generate_cipher_key)
+            dpg.add_button(
+                label="hide key",
+                callback=callback_button__show_cipher_key,
+                tag="item_button__toggle_password_property")
+
+        dpg.add_text("Можно использовать ключ из переменной окружения")
+        dpg.add_text("Введите имя переменной окружения с ключом шифрования")
+        with dpg.group(horizontal=True):
+            dpg.add_input_text(default_value="ENVOS_CRYPTO_01", tag="item_input_test__env_var_name")
+            dpg.add_button(
+                label="use key from ENV VAR", callback=callback_item_button__use_key_from_env_var)
+        with dpg.tree_node(label="Зашифровать:"):
+            dpg.add_text("Введите то что хотите зашифровать с помощью ключа")
+            dpg.add_input_text(default_value="что то для шифрования", tag="item_input__for_encrypt")
+            dpg.add_button(label="encrypt", callback=callback_item_button__encrypt)
+            dpg.add_text("результат")
+            dpg.add_input_text(default_value="что то для шифрования", tag="item_input__encrypted")
+        with dpg.tree_node(label="Расшифровать:"):
+            dpg.add_text("Введите то что хотите расшифровать с помощью ключа")
+            dpg.add_input_text(default_value="что то для декодирования", tag="item_input__for_decrypt")
+            dpg.add_button(label="decrypt", callback=callback_item_button__decrypt)
+            dpg.add_text("результат")
+            dpg.add_input_text(default_value="что то для шифрования", tag="item_input__decrypted")
+
+    # =======================================================================================================================
+    # подключения к базам
+    # =======================================================================================================================
+
     with dpg.collapsing_header(label="Подключения к базам данных"):
         dpg.add_text("Выберете каталог с конфигурациями подключений")
 
+    # =======================================================================================================================
     # формирование отчета
+    # =======================================================================================================================
     with dpg.collapsing_header(label="Сформировать отчет в формате csv по Autodoc"):
         dpg.add_text("Выберете каталог с объектами исходного кода для формирования отчета")
         with dpg.group(horizontal=True):
@@ -226,10 +314,14 @@ with dpg.window(tag="Primary Window", autosize=True):
         dpg.add_text("Введите наменование файла отчета")
         dpg.add_input_text(default_value=default_report_file_name, tag="input__report_file_name")
 
-        dpg.add_button(label="Сформировать отчет",
-                           callback=callback_button__create_report, width=-1, height=50)
+        dpg.add_text("По какому модулю будет фильтрация - укажите через запятую")
+        dpg.add_input_text(default_value=default_report_file_name, tag="input__report_module_filter")
 
+        dpg.add_button(label="Сформировать отчет",
+                       callback=callback_button__create_report, width=-1, height=50)
+    # =======================================================================================================================
     # Генерация файлов для репозитория
+    # =======================================================================================================================
     with dpg.collapsing_header(label="Генерация файлов для репозитория"):
 
         with dpg.tree_node(label="На основе конфигурации:"):
@@ -299,7 +391,7 @@ with dpg.window(tag="Primary Window", autosize=True):
                     dpg.add_file_extension(".yaml", color=(150, 255, 150, 255))
         # Dataset Defenition
             dpg.add_text("Выберете файл с описанием датасета")
-            with dpg.group(horizontal=True):            
+            with dpg.group(horizontal=True):
                 dpg.add_input_text(default_value="", tag="input__file_dataset_definition")
                 with dpg.file_dialog(
                     directory_selector=False,
@@ -334,6 +426,23 @@ with dpg.window(tag="Primary Window", autosize=True):
         dpg.add_button(
             label="OK",
             callback=lambda: dpg.configure_item("modal_id", show=False),
+            width=-1,
+        )
+
+    # Info message popup with error
+    with dpg.window(
+        label="Info",
+        modal=True,
+        show=False,
+        tag="window_modal__get_value_from_env_var_error",
+        pos=(300, 200),
+        no_resize=True,
+        autosize=True,
+    ):
+        dpg.add_text("Не найдено значение переменной окружения", tag="item_text__window_modal__get_value_from_env_var_error")
+        dpg.add_button(
+            label="OK",
+            callback=lambda: dpg.configure_item("window_modal__get_value_from_env_var_error", show=False),
             width=-1,
         )
 
